@@ -13,7 +13,8 @@ module.exports = {
         var id = req.params.id;
         Item.findOne({'id':id}).then(item=>
           {
-            return res.json(item);
+            res.setHeader('content-type', 'text/javascript');
+            res.json(item);
           });
         // Item.findOne({'id':id}).then(item=>
         //   {
