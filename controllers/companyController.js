@@ -1,6 +1,11 @@
 const Item=	require('../model/company');
 module.exports = {
 
+    handleError:function(res, reason, message, code)
+    {
+      console.log("ERROR: " + reason);
+      res.status(code || 500).json({"error": message});
+    },
     home : function(req, res){
 
        //do something
@@ -13,8 +18,11 @@ module.exports = {
         var id = req.params.id;
         Item.findOne({'id':id}).then(item=>
           {
-            res.setHeader('content-type', 'text/javascript');
-            res.json(item);
+            
+              // res.setHeader('content-type', 'text/javascript');
+              res.status(200).json(item);
+            
+            
           });
         // Item.findOne({'id':id}).then(item=>
         //   {
