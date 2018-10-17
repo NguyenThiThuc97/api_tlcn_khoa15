@@ -13,16 +13,12 @@ module.exports = {
 		.sort({Date:-1})
 		.then(item=>res.json(item))
     },
-    view : function(req, res){
+    view : function(req, res, next){
        //do something
         var id = req.params.id;
         Item.findOne({'id':id}).then(item=>
           {
-            
-              // res.setHeader('content-type', 'text/javascript');
-              res.status(200).json(item);
-            
-            
+              res.json(item);
           });
         // Item.findOne({'id':id}).then(item=>
         //   {

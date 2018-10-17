@@ -8,7 +8,11 @@ const Schema=mongoose.Schema;
 //create Schema
 const ItemSchema=new Schema(
 {
-	id:ObjectId,
+	id:{
+		type:Number,
+		require:true,
+		unique:true
+	},
 	name:{
 		type:String,
 		require:true
@@ -26,6 +30,6 @@ const ItemSchema=new Schema(
 		require:true
 	}
 });
-ItemSchema.plugin(AutoIncrement, {id:'order_seq',inc_field: 'id'});
+ItemSchema.plugin(AutoIncrement, {id:'saleCodeIdAuto',inc_field: 'id'});
 // Biên dịch mô hình từ schema
-module.exports=Item=mongoose.model('tb_sale_code', ItemSchema);// change table 
+module.exports=Item=mongoose.model('tb_sale_codes', ItemSchema);// change table 

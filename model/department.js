@@ -8,12 +8,19 @@ const Schema=mongoose.Schema;
 //create Schema
 const ItemSchema=new Schema(
 {
-	id:ObjectId,
-	name:String
+	id:{
+		type:Number,
+		require:true,
+		unique:true
+	},
+	name:{
+		type:String,
+		require:true
+	}
 });
-ItemSchema.plugin(AutoIncrement, {id:'order_seq',inc_field: 'id'});
+ItemSchema.plugin(AutoIncrement, {id:'departmentIdAuto',inc_field: 'id'});
 // Biên dịch mô hình từ schema
-module.exports=Item=mongoose.model('tb_department', ItemSchema);// change table 
+module.exports=Item=mongoose.model('tb_departments', ItemSchema);// change table 
 
 /*
 	var mongoose = require('mongoose');

@@ -45,13 +45,13 @@ router.route('/company/delete/:id').get(company.delete);
 // router.route('/customer/update').post(customer.update);
 // router.route('/customer/delete/:id').get(customer.delete);
 
-// /*5. department*/
-// const department=	require('../controllers/departmentController');
-// router.route('/department').get(department.home);
-// router.route('/department/:id').get(department.view);
-// router.route('/department/create').post(department.create);
-// router.route('/department/update').post(department.update);
-// router.route('/department/delete/:id').get(department.delete);
+/*5. department*/
+const department=	require('../controllers/departmentController');
+router.route('/department').get(department.home);
+router.route('/department/:id').get(department.view);
+router.route('/department/create').post(department.create);
+router.route('/department/update').post(department.update);
+router.route('/department/delete/:id').get(department.delete);
 
 // /*6. orders*/
 // const orders=	require('../controllers/ordersController');
@@ -61,21 +61,21 @@ router.route('/company/delete/:id').get(company.delete);
 // router.route('/orders/update').post(orders.update);
 // router.route('/orders/delete/:id').get(orders.delete);
 
-// /*7. product*/
-// const product=	require('../controllers/productController');
-// router.route('/product').get(product.home);
-// router.route('/product/:id').get(product.view);
-// router.route('/product/create').post(product.create);
-// router.route('/product/update').post(product.update);
-// router.route('/product/delete/:id').get(product.delete);
+/*7. product*/
+const product=	require('../controllers/productController');
+router.route('/product').get(product.home);
+router.route('/product/:id').get(product.view);// add product_detail to view product_detail
+router.route('/product/create').post(product.create);
+router.route('/product/update').post(product.update);
+router.route('/product/delete/:id').get(product.delete);
 
-// /*8. sale_code*/
-// const sale_code=	require('../controllers/saleCodeController');
-// router.route('/sale_code').get(sale_code.home);
-// router.route('/sale_code/:id').get(sale_code.view);
-// router.route('/sale_code/create').post(sale_code.create);
-// router.route('/sale_code/update').post(sale_code.update);
-// router.route('/sale_code/delete/:id').get(sale_code.delete);
+/*8. sale_code*/
+const sale_code=	require('../controllers/saleCodeController');
+router.route('/sale_code').get(sale_code.home);
+router.route('/sale_code/:id').get(sale_code.view);
+router.route('/sale_code/create').post(sale_code.create);
+router.route('/sale_code/update').post(sale_code.update);
+router.route('/sale_code/delete/:id').get(sale_code.delete);
 
 /*9. size*/
 const size=	require('../controllers/sizeController');

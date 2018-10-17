@@ -7,7 +7,7 @@ module.exports = {
 		.sort({Date:-1})
 		.then(item=>res.json(item))
     },
-    view : function(req, res, id){
+    view : function(req, res){
        //do something
         var id = req.params.id;
         Item.findOne({'id':id}).then(item=>res.json(item));

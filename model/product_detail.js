@@ -14,6 +14,7 @@ const ItemSchema=new Schema(
 	quantity:Number,
 	is_discount:Boolean,
 	discount_price:Number
+	// with id(product)-id(size)-id(color) we have a product_detail
 });
 
 // Biên dịch mô hình từ schema
