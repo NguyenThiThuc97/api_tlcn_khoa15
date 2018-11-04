@@ -9,8 +9,10 @@ const Schema=mongoose.Schema;
 const ItemSchema=new Schema(
 {
 	customer:Number,
-	category:Number,
-	category_for:Number
+	category_detail:Number
+	// category:Number,
+	// category_for:Number
+	// một khách hàng có nhiều sở thích khác nhau, 1 sở thích có nhiều khách hàng
 });
 
 // Biên dịch mô hình từ schema

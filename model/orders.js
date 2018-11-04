@@ -8,8 +8,15 @@ const Schema=mongoose.Schema;
 //create Schema
 const ItemSchema=new Schema(
 {
-	id:ObjectId,
-	status:Boolean,
+	id:{
+		type:Number,
+		require:true,
+		unique:true
+	},
+	status:{
+		type:Boolean,
+		default:false
+	},
 	date_create:{
 		type:Date,
 		default:Date.now
@@ -20,9 +27,12 @@ const ItemSchema=new Schema(
 		default:Date.now
 	},
 	total:Number,
-	customer:Number
+	customer:{
+		type:Number,
+		require:true
+	}
 });
-ItemSchema.plugin(AutoIncrement, {id:'order_seq',inc_field: 'id'});
+ItemSchema.plugin(AutoIncrement, {id:'ordersIdAuto',inc_field: 'id'});
 // Biên dịch mô hình từ schema
 module.exports=Item=mongoose.model('tb_orders', ItemSchema);// change table 
 

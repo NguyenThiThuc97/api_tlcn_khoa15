@@ -20,14 +20,6 @@ module.exports = {
           {
               res.json(item);
           });
-        // Item.findOne({'id':id}).then(item=>
-        //   {
-
-        //     json = JSON.stringify(item); // json gets the string "2016-08-26 etc..."
-        //     newfoo = JSON.parse(json);  // newfoo is now a string, NOT a "Date" object.
-        //     console.log(newfoo["name"]);
-        //   });
-        // // select({ "name": 1, "_id": 0});//.select('name -_id')
     },
     create : function(req, res){//need test
        //do something

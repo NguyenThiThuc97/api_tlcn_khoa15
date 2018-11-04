@@ -17,7 +17,7 @@ const ItemSchema=new Schema(
 		type:String,
 		require:true
 	},
-	percent:{
+	_percent:{
 		type:Number,
 		require:true
 	},

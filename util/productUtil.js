@@ -3,6 +3,8 @@ const itemCompany=  require('../model/company');
 const itemCategory=  require('../model/category_detail');
 const itemProductDetail= require('../model/product_detail');
 const categoryUtil= require('../util/categoryUtil');
+const itemSize= require('../model/size');
+const itemColor= require('../model/color');
 
 module.exports=
 {
@@ -12,7 +14,6 @@ module.exports=
 		var productCategory=[];
 		var productCompany=[];
 		var productName=[];
-		var productPrice=[];
 		return itemProduct.find().then(function(result)
 		{
 			for(var val of result)
@@ -21,10 +22,9 @@ module.exports=
 				productCategory.push(val["category"]);
 				productCompany.push(val["company"]);
 				productName.push(val["name"]);
-				productPrice.push(val["price"]);
 			}
 			var size=productId.length;
-			return {productId, productCategory, productCompany, productName, productPrice, size};
+			return {productId, productCategory, productCompany, productName, size};
 		}).catch(function(err)
 		{
 			return "fail";
@@ -93,7 +93,7 @@ module.exports=
               var obj=[];
               for(var i=0;i<n;i++)
               {
-                obj.push({"id":product["productId"][i], "name":product["productName"][i], "company":result[i], "category":result1[i], "price":product["productPrice"][i]});
+                obj.push({"id":product["productId"][i], "name":product["productName"][i], "company":result[i], "category":result1[i]});
               }
               return obj;
 
@@ -101,7 +101,7 @@ module.exports=
           });
         })
 	},
-	testForCreate:function(company, category, price)
+	testForCreate:function(company, category)
 	{
 		var test_company=itemCompany.find({"id":company});
 		//test company exists
@@ -142,5 +142,30 @@ module.exports=
           }
         });
 
+	},
+	findProductId:function(id)
+	{
+		return itemProductDetail.find({"id":id}).then(function(result)
+		{
+			return Promise.all(result["size"].map(val=>
+			{
+				return itemSize.findOne({"id":val}).exec();
+			})).then(function(sizeResult)
+			{
+				return Promise.all(result["color"].map(val1=>
+				{
+					return itemColor.findOne({"id":val1}).exec();
+				})).then(function(colorResult)
+				{
+					var n=result.length;
+					var obj=[];
+					for(var i=0;i<n;i++)
+					{
+						obj.push({"size":sizeResult[i],"color":colorResult[i]});
+					}
+					return obj;
+				})
+			})
+		})
 	}
 }

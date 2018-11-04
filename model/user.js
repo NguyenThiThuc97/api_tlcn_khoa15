@@ -8,22 +8,56 @@ const Schema=mongoose.Schema;
 //create Schema
 const ItemSchema=new Schema(
 {
-	id:ObjectId,
-	username:String, 
-	full_name:String,
-	phone:Number,
-	mail:String,
-	address:String, 
-	password:String,
-	department: Number,
-	image:String
+	id:{
+		type:Number,		
+		unique:true
+	},
+	username:{
+		type:String,
+		required:true
+	}, 
+	fullname:{
+		type:String,
+		required:true,
+		default:""
+	},
+	phone:{
+		type:Number,
+		required:true,
+		default:""
+	},
+	mail:{
+		type:String,
+		required:true,
+		default:""
+	},
+	address:{
+		type:String,
+		required:true,
+		default:""
+	}, 
+	password:{
+		type:String,
+		required:true,
+		default:""
+	},
+	department: {
+		type:Number,
+		required:true,
+		default:""
+	},
+	image:{
+		type:String,
+		required:true,
+		default:""
+	}
 });
-ItemSchema.plugin(AutoIncrement, {id:'order_seq',inc_field: 'id'});
+ItemSchema.plugin(AutoIncrement, {id:'userIdAuto',inc_field: 'id'});
 // Biên dịch mô hình từ schema
-module.exports=Item=mongoose.model('tb_user', ItemSchema);// change table 
+module.exports=Item=mongoose.model('tb_users', ItemSchema);// change table 
 
 /*
-	var mongoose = require('mongoose');
+	var mongoose = required('mongoose');
 
 	var Schema = mongoose.Schema,
 	    ObjectId = Schema.ObjectId;

@@ -3,109 +3,101 @@ const ItemCatFor=	require('../model/category_for');
 const ItemCatDetail=	require('../model/category_detail');
 module.exports=
 {
-	getCatDetail:function()
-	{
-		var catDetailId=[];
-		var catNameId=[];
-		var catNameForId=[];
-		return ItemCatDetail.find().then(function(result)
-		{
-			for(var val of result)
-			{
-				catNameId.push(val["category"]);
-				catNameForId.push(val["category_for"]);
-				catDetailId.push(val["id"]);
-			}
-			var size=catNameId.length;
-			return {catNameId, catNameForId, catDetailId, size};
-		}).catch(function(err)
-		{
-			return "fail";
-		});
-	},
-	getCatName:function()
-	{
-		return module.exports.getCatDetail().then(function(catDetail)
-		{
-			return Promise.all(catDetail["catNameId"].map(val=>
-			{
-				return ItemCat.findOne({"id":val}).exec();
-			})).then(function(result)
-			{
-				var arrCatName=[];
-				for(var val of result)
-				{
-					arrCatName.push(val["name"]);
-				}
-				return arrCatName;
-			}).catch(function(err)
-			{
-				return "fail";
-			})
-		})
-	},
-	getCatForName:function()
-	{
-		return module.exports.getCatDetail().then(function(catDetail)
-		{
-			return Promise.all(catDetail["catNameForId"].map(val=>
-			{
-				return ItemCatFor.findOne({"id":val}).exec();
-			})).then(function(result)
-			{
-				var arrCatForName=[];
-				for(var val of result)
-				{
-					arrCatForName.push(val["name"]);
-				}
-				return arrCatForName;
-			}).catch(function(err)
-			{
-				return "fail";
-			})
-		})
-	},
 	getAllCatDetail:function()
 	{
-		return module.exports.getCatDetail().then(function(size)
+		return ItemCatDetail.find().then(function(category_details)
 		{
-			return module.exports.getCatName().then(function(result)
+			return Promise.all(category_details.map(val=>
 			{
-				return module.exports.getCatForName().then(function(result1)
+				var category=ItemCat.findOne({"id":val["category"]}).exec();
+				return category;
+			})).then(function(categorys)
+			{
+				return Promise.all(category_details.map(val1=>
 				{
-					var n=size["size"];
-					var obj=[];
-					for(var i=0;i<n;i++)
-					{
-						obj.push({"id":size["catDetailId"][i], "category":result[i], "category_for":result1[i]});
-					}
-					return obj;
-				});
-			});
+					return ItemCatFor.findOne({"id":val1["category_for"]}).exec();
+				})).then(function(category_fors)
+				{
+					var category=categorys;
+					var category_for=category_fors;
+					var category_detail=category_details;
+					var result={category_detail, category, category_for};
+					// console.log(result["category"]);
+					return result;
+				})
+			}).catch(function(err)
+			{
+				return err;
+			})
 		})
+	},
+	getCatDetail:function(category, category_for)
+	{
+		return ItemCatDetail.find({"category":category, "category_for":category_for}).then(function(category_details)
+		{
+			return Promise.all(category_details.map(val=>
+			{
+				var category=ItemCat.findOne({"id":val["category"]}).exec();
+				return category;
+			})).then(function(categorys)
+			{
+				return Promise.all(category_details.map(val1=>
+				{
+					return ItemCatFor.findOne({"id":val1["category_for"]}).exec();
+				})).then(function(category_fors)
+				{
+					var category=categorys;
+					var category_for=category_fors;
+					var category_detail=category_details;
+					var result={category_detail, category, category_for};
+					// console.log(result["category"]);
+					return result;
+				})
+			}).catch(function(err)
+			{
+				return err;
+			})
+		})
+	},
+	testForCreate:function(cat, cat_for)
+	{
+
+		//test category is exist
+		var test_cate=ItemCat.find({"id":cat});
+		return test_cate.count().then((countCate)=>
+		{
+			if(countCate!==0)
+			{
+				//test category_for is exist
+				var test_cate_for=ItemCatFor.find({"id":cat_for});
+				return test_cate_for.count().then((countCateFor)=>
+				{
+					if(countCateFor!==0)
+					{
+						var a=ItemCatDetail.find({"category":cat, "category_for":cat_for});
+						return a.count().then((count)=>
+							{
+								if(count!==0)
+								{
+									return {message: 'category_detail is existed!'};
+								}
+								else
+								{
+									return true;
+								}
+							});						
+					}
+					else
+					{
+						return {message: 'category_for is not existed'};
+					}
+				})
+
+			}
+			else
+			{
+				return {message: 'category is not existed!'};
+			}
+		});
 	}
-	/*
-	categoryUtil.getCatDetail().then(function(size)
-		{
-			categoryUtil.getCatName().then(function(result)
-			{
-				categoryUtil.getCatForName().then(function(result1)
-				{
-					var n=size["size"];
-					// var categoryName=[];
-					// var categoryForName=[];
-					// var catDetailId=size["catDetailId"];
-					var obj=[];
-					for(var i=0;i<n;i++)
-					{
-						// console.log(result[i]+" - "+result1[i]);
-						obj.push({"id":size["catDetailId"][i], "category":result[i], "category_for":result1[i]});
-						// categoryName.push(result[i]);
-						// categoryForName.push(result1[i]);
-					}
-					res.json(obj);
-				});
-			});
-		})
-	*/
 }

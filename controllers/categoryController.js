@@ -4,12 +4,23 @@ const ItemCatDetail=	require('../model/category_detail');
 const categoryUtil=	require('../util/categoryUtil');
 module.exports = 
 {
+	allCategory:function(req, res)
+	{
+		ItemCat.find().then(result=>
+			res.json(result)
+			);
+	},
+	allCategoryFor:function(req, res)
+	{
+		ItemCatFor.find().then(result=>
+			res.json(result)
+			);
+	},
 	home : function(req, res)
 	{
 		categoryUtil.getAllCatDetail().then(function(result)
 		{
 			res.json(result);
-			// console.log(result.length);
 		})
 	},
 	viewCat : function(req, res)
@@ -123,114 +134,66 @@ module.exports =
 	},
 	viewCatDetail : function(req, res)
 	{
-		var id=req.params.id;
-		ItemCatDetail.findOne({'id':id}).then(item=>res.json(item));
+		var category=req.params.category;
+		var category_for=req.params.category_for;
+		categoryUtil.getCatDetail(category, category_for).then(function(result)
+		{
+			res.json(result);
+		})
 	},
 	createCatDetail : function(req, res)
 	{
-		var cat=req.body.cat;
-		var cat_for=req.body.cat_for;
-		//test category is exist
-		var test_cate=ItemCat.find({"id":cat});
-		test_cate.count().then((countCate)=>
+		var cat=req.body.category;
+		var cat_for=req.body.category_for;
+		categoryUtil.testForCreate(cat, cat_for).then(function(result)
 		{
-			if(countCate!==0)
+			if(result===true)
 			{
-				//test category_for is exist
-				var test_cate_for=ItemCatFor.find({"id":cat_for});
-				test_cate_for.count().then((countCateFor)=>
-				{
-					if(countCateFor!==0)
-					{
-						var a=ItemCatDetail.find({"category":cat, "category_for":cat_for});
-						a.count().then((count)=>
-							{
-								if(count!==0)
-								{
-									res.json({message: 'record is existed!'});
-								}
-								else
-								{
-									const newItem=new ItemCatDetail(
-									{
-										category:cat,
-										category_for:cat_for
-									});
-
-									newItem.save().then(item=>res.json(item));
-								}
-							});						
-					}
-					else
-					{
-						res.json({message: 'category_for is not existed'});
-					}
-				})
-
+				const newItem=new ItemCatDetail(
+	            {	
+	              	category:cat,
+					category_for:cat_for
+	            });
+	            newItem.save().then(item=>res.json(item));//return a new product
 			}
 			else
-			{
-				res.json({message: 'category is not existed!'});
-			}
-		});
-		
+				return res.json(result);
+		})
 
 	},
 
 	updateCatDetail : function(req, res)
 	{
-		var id=req.body.id;
-		var cat=req.body.cat;
-		var cat_for=req.body.cat_for;
 
-		var test_cate=ItemCat.find({"id":cat});
-		test_cate.count().then((countCate)=>
+		var old_cat=req.body.old_cat;
+		var old_cat_for=req.body.old_cat_for;
+		var new_cat=req.body.new_cat;
+		var new_cat_for=req.body.new_cat_for;
+		categoryUtil.testForCreate(new_cat, new_cat_for).then(function(result)
 		{
-			if(countCate!==0)
+			if(result===true)
 			{
-				var test_cate_for=ItemCatFor.find({"id":cat_for});
-				test_cate_for.count().then((countCateFor)=>
+				ItemCatDetail.findOneAndUpdate({"category":old_cat, "category_for":old_cat_for},{"$set":{"category":new_cat, "category_for":new_cat_for}}, function(err)
 				{
-					if(countCateFor!==0)
+					if(err)
 					{
-						var a=ItemCatDetail.find({"category":cat, "category_for":cat_for});
-
-						a.count().then((count)=>
-						{
-							if(count!==0)
-								{
-									res.json({message: 'record is existed!'});
-								}
-								else
-								{
-									ItemCatDetail.findOneAndUpdate({"id":id},{"$set":{"category":cat, "category_for":cat_for}}, function(err)
-									{
-										if(err)
-										{
-											res.send("fail");
-										}
-										else
-										{
-											res.json({message: 'Offer Updated!'});
-										}
-									})
-								}
-						});
+						res.send("fail");
 					}
 					else
-						res.json({message: 'category_for is not existed'});
+					{
+						res.json({message: 'Offer Updated!'});
+					}
 				})
 			}
 			else
-				res.json({message: 'category is not existed!'});
+				res.json(result);
 		})
-		
-		
 	},
 	deleteCatDetail : function(req, res)
 	{
-		var id=req.params.id;
-		ItemCatDetail.findOneAndRemove({"id":id}, function(err)
+		var cat=req.params.category;
+		var cat_for=req.params.category_for;
+		ItemCatDetail.findOneAndRemove({"category":cat, "category_for":cat_for}, function(err)
 		{
 			if (err)
                 res.send(err);

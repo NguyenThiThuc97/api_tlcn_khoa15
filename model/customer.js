@@ -8,18 +8,43 @@ const Schema=mongoose.Schema;
 //create Schema
 const ItemSchema=new Schema(
 {
-	id:ObjectId,
-	username:String, 
-	full_name:String,
-	phone:Number,
-	mail:String,
-	address:String, 
-	password:String,
-	image:String
+	id:{
+		type:Number,
+		require:true,
+		unique:true
+	},
+	username:{
+		type:String,
+		require:true
+	}, 
+	full_name:{
+		type:String,
+		require:true
+	},
+	phone:{
+		type:Number,
+		require:true
+	},
+	mail:{
+		type:String,
+		require:true
+	},
+	address:{
+		type:String,
+		require:true
+	}, 
+	password:{
+		type:String,
+		require:true
+	},
+	image:{
+		type:String,
+		require:true
+	}
 });
-ItemSchema.plugin(AutoIncrement, {id:'order_seq',inc_field: 'id'});
+ItemSchema.plugin(AutoIncrement, {id:'customerIdAuto',inc_field: 'id'});
 // Biên dịch mô hình từ schema
-module.exports=Item=mongoose.model('tb_customer', ItemSchema);// change table 
+module.exports=Item=mongoose.model('tb_customers', ItemSchema);// change table 
 
 /*
 	var mongoose = require('mongoose');

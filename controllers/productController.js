@@ -16,33 +16,48 @@ module.exports = {
     view : function(req, res){
        //do something
         var id = req.params.id;
-        Item.findOne({'id':id}).then(item=>res.json(item));
+        var obj=[];
+        // Item.findOne({'id':id}).then(item=>res.json(item));
+        productUtil.getAllProduct().then(function(result)
+        {
+          for(var i=0;i<result.length;i++)
+          {
+            if(result["id"]===id)
+            {
+              obj.push("")
+            }
+          }
+          return obj;
+          // productUtil.findProductId()
+        }) 
         // select({ "name": 1, "_id": 0});
     },
-    create : function(req, res){//need test
+    create : function(req, res){
        //do something
         var names = req.body.name;
         var company = req.body.company;
         var category = req.body.category;
-        var price = req.body.price;
 
-        productUtil.testForCreate(company, category, price).then(function(result)
+        productUtil.testForCreate(company, category).then(function(result)
         {
-          if(result===true)
+          if(result===true)// can create a new product
           {
             const newItem=new itemProduct(
             {
               name:names,
               company:company,
-              category:category,
-              price:price
+              category:category
             });
-            newItem.save().then(item=>res.json(item));
+            newItem.save().then(item=>res.json(item));//return a new product
           }
           else
-            res.json(result);
+            res.json(result);//result=false;
         })
         
+    },
+    createProductDetail:function(req, res)
+    {
+      //test for create product_detail
     },
     update : function(req, res){//need test
        //do something
@@ -50,12 +65,11 @@ module.exports = {
         var names = req.body.name;
         var company = req.body.company;
         var category = req.body.category;
-        var price = req.body.price;
-        productUtil.testForCreate(company, category, price).then(function(result)
+        productUtil.testForCreate(company, category).then(function(result)
         {
           if(result===true)
           {
-            itemProduct.findOneAndUpdate({'id':id}, {"$set":{"name":names, "company":company, "category":category, "price":price}}, function(err) {
+            itemProduct.findOneAndUpdate({'id':id}, {"$set":{"name":names, "company":company, "category":category}}, function(err) {
               if (err)
                   res.send("fail");
               else

@@ -8,15 +8,31 @@ const Schema=mongoose.Schema;
 //create Schema
 const ItemSchema=new Schema(
 {
-	id:Number,
-	productId:Number,
-	size:Number,
-	color:Number,
-	quantity:Number
+	id:{
+		type:Number,
+		require:true,
+		unique:true
+	},//orders(id)
+	product:{
+		type:Number,
+		require:true
+	},
+	size:{
+		type:Number,
+		require:true
+	},
+	color:{
+		type:Number,
+		require:true
+	},
+	quantity:{
+		type:Number,
+		require:true
+	}
 });
 
 // Biên dịch mô hình từ schema
-module.exports=Item=mongoose.model('tb_orders_detail', ItemSchema);// change table 
+module.exports=Item=mongoose.model('tb_orders_details', ItemSchema);// change table 
 
 /*
 	var mongoose = require('mongoose');

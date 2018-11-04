@@ -22,13 +22,16 @@ const ItemSchema=new Schema(
 		require:true
 	},
 	category:{
-		type:Number,
+		type:Number,//đầm xòe, đầm suông, áo sơ mi cổ đứng, áo sơ mi tay ngắn, áo sơ mi tay dài,...
 		require:true
-		//get ID from category_detail		
 	},
-	price:{
+	categogy_for:
+	{
 		type:Number,
 		require:true
+	},
+	description:{
+		tyype:String
 	}
 });
 ItemSchema.plugin(AutoIncrement, {id:'productIdAuto',inc_field: 'id'});

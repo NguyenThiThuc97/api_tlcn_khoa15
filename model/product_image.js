@@ -9,15 +9,15 @@ const Schema=mongoose.Schema;
 const ItemSchema=new Schema(
 {
 	id:ObjectId,
-	product_id:Number,
+	product:Number,
 	size:Number,
 	color:Number,
 	image_name:String,
 	image:String
 });
-ItemSchema.plugin(AutoIncrement, {id:'order_seq',inc_field: 'id'});
+ItemSchema.plugin(AutoIncrement, {id:'productImageIdAuto',inc_field: 'id'});
 // Biên dịch mô hình từ schema
-module.exports=Item=mongoose.model('tb_product_image', ItemSchema);// change table 
+module.exports=Item=mongoose.model('tb_product_images', ItemSchema);// change table 
 
 /*
 	var mongoose = require('mongoose');
