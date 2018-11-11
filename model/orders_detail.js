@@ -4,30 +4,28 @@ var AutoIncrement = require('mongoose-sequence')(mongoose);
 // Định nghĩa schema
 const Schema=mongoose.Schema;
 
-
 //create Schema
 const ItemSchema=new Schema(
 {
-	id:{
+	product_id:{
 		type:Number,
-		require:true,
-		unique:true
-	},//orders(id)
-	product:{
-		type:Number,
-		require:true
+		required:true
 	},
 	size:{
-		type:Number,
-		require:true
+		type:String,
+		required:true
 	},
 	color:{
-		type:Number,
-		require:true
+		type:Object,
+		required:true
 	},
 	quantity:{
 		type:Number,
-		require:true
+		required:true
+	},
+	sale_code:{
+		type:String,
+		default:0
 	}
 });
 

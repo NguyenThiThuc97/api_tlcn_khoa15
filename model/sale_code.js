@@ -10,24 +10,22 @@ const ItemSchema=new Schema(
 {
 	id:{
 		type:Number,
-		require:true,
-		unique:true
 	},
 	name:{
 		type:String,
-		require:true
+		required:true
 	},
 	_percent:{
 		type:Number,
-		require:true
+		required:true
 	},
-	quantity_from:{
-		type:Number,
-		require:true
+	time_from:{
+		type:Date,
+		required:true
 	},
-	quantity_to:{
-		type:Number,
-		require:true
+	time_to:{
+		type:Date,
+		required:true
 	}
 });
 ItemSchema.plugin(AutoIncrement, {id:'saleCodeIdAuto',inc_field: 'id'});

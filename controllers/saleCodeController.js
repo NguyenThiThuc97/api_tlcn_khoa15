@@ -17,15 +17,15 @@ module.exports = {
        //do something
         var names = req.body.name;
         var percents = req.body.percent;
-        var quantity_froms = req.body.quantity_from;
-        var quantity_tos = req.body.quantity_to;
+        var time_from = new Date(req.body.time_from);
+        var time_to = new Date(req.body.time_to);
 
         const newItem=new Item(
           {
             name:names,
-            percent:percents,
-            quantity_from:quantity_froms,
-            quantity_to:quantity_tos
+            _percent:percents,
+            time_from:time_from,
+            time_to:time_to
           });
         
         newItem.save().then(item=>res.json(item));
@@ -35,9 +35,9 @@ module.exports = {
         var id = req.body.id;
         var name = req.body.name;
         var percent = req.body.percent;
-        var quantity_from = req.body.quantity_from;
-        var quantity_to = req.body.quantity_to;
-        Item.findOneAndUpdate({'id':id}, {"$set":{"name":name, "percent":percent, "quantity_from":quantity_from, "quantity_to":quantity_to}}, function(err) {
+        var time_from = new Date(req.body.time_from);
+        var time_to = new Date(req.body.time_to);
+        Item.findOneAndUpdate({'id':id}, {"$set":{"name":name, "_percent":percent, "time_from":time_from, "time_to":time_to}}, function(err) {
               if (err)
                   res.send("fail");
               else

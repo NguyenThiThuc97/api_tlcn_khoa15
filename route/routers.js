@@ -4,24 +4,12 @@ const router=express.Router();
 
 /*1. category*/ 
 const category=	require('../controllers/categoryController');
-router.route('/category_detail').get(category.home);//show category_detail
 //category
-router.route('/category').get(category.allCategory);
-router.route('/category/:id').get(category.viewCat);
-router.route('/category/create').post(category.createCat);
-router.route('/category/update').post(category.updateCat);
-router.route('/category/delete/:id').get(category.deleteCat);
-//category_for
-router.route('/category_for').get(category.allCategoryFor);
-router.route('/category_for/:id').get(category.viewCatFor);
-router.route('/category_for/create').post(category.createCatFor);
-router.route('/category_for/update').post(category.updateCatFor);
-router.route('/category_for/delete/:id').get(category.deleteCatFor);
-//category_detail
-router.route('/category_detail/:category/:category_for').get(category.viewCatDetail);
-router.route('/category_detail/create').post(category.createCatDetail);
-router.route('/category_detail/update').post(category.updateCatDetail);
-router.route('/category_detail/delete/:category/:category_for').get(category.deleteCatDetail);
+router.route('/category').get(category.home);
+router.route('/category/:id').get(category.view);
+router.route('/category/create').post(category.create);
+router.route('/category/update').post(category.update);
+router.route('/category/delete/:id').get(category.delete);
 
 /*2. color*/
 const color=	require('../controllers/colorController');
@@ -68,11 +56,14 @@ router.route('/orders/delete/:id').get(orders.delete);
 /*7. product*/
 const product=	require('../controllers/productController');
 router.route('/product').get(product.home);
-router.route('/product/:id').get(product.view);// add product_detail to view product_detail
+router.route('/product/:id').get(product.view);
 router.route('/product/create').post(product.create);
 router.route('/product/update').post(product.update);
-router.route('/product/delete/:id').get(product.delete);
+router.route('/product/delete/:id').get(product.deleteProduct);
+
 router.route('/product_detail/create').post(product.createProductDetail);
+router.route('/product_detail/update').post(product.updateProductDetail);
+router.route('/product_detail/delete/:product_id/:size/:color').get(product.deleteProductDetail);
 
 /*8. sale_code*/
 const sale_code=	require('../controllers/saleCodeController');
@@ -82,13 +73,6 @@ router.route('/sale_code/create').post(sale_code.create);
 router.route('/sale_code/update').post(sale_code.update);
 router.route('/sale_code/delete/:id').get(sale_code.delete);
 
-/*9. size*/
-const size=	require('../controllers/sizeController');
-router.route('/size').get(size.home);
-router.route('/size/:id').get(size.view);
-router.route('/size/create').post(size.create);
-router.route('/size/update').post(size.update);
-router.route('/size/delete/:id').get(size.delete);
 
 /*10. user*/
 const user=	require('../controllers/userController');
@@ -98,5 +82,13 @@ router.route('/user/create').post(user.create);
 router.route('/user/update').post(user.update);
 router.route('/user/delete/:id').get(user.delete);
 
+
+/*12. product_sale*/
+const product_sale=	require('../controllers/productSaleController');
+router.route('/product_sale').get(product_sale.home);
+router.route('/product_sale/:product/:size/:color/:sale_code').get(product_sale.view);
+router.route('/product_sale/create').post(product_sale.create);
+router.route('/product_sale/update').post(product_sale.update);
+router.route('/product_sale/delete/:product/:size/:color/:sale_code').get(product_sale.delete);
 
 module.exports = router;

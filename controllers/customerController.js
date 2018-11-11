@@ -54,7 +54,7 @@ module.exports = {
             image:image
           });
         
-        // newItem.save().then(item=>res.json(item));
+        newItem.save().then(item=>res.json(item));
     },
     update : function(req, res){//need test
        //do something

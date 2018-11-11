@@ -10,36 +10,35 @@ const ItemSchema=new Schema(
 {
 	id:{
 		type:Number,
-		require:true,
 		unique:true
 	},
 	username:{
 		type:String,
-		require:true
+		required:true
 	}, 
 	full_name:{
 		type:String,
-		require:true
+		default:""
 	},
 	phone:{
 		type:Number,
-		require:true
+		default:""
 	},
 	mail:{
 		type:String,
-		require:true
+		default:""
 	},
 	address:{
 		type:String,
-		require:true
+		default:""
 	}, 
 	password:{
 		type:String,
-		require:true
+		required:true
 	},
 	image:{
 		type:String,
-		require:true
+		default:""
 	}
 });
 ItemSchema.plugin(AutoIncrement, {id:'customerIdAuto',inc_field: 'id'});

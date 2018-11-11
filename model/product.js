@@ -10,28 +10,36 @@ const ItemSchema=new Schema(
 {
 	id:{
 		type:Number,
-		require:true,
 		unique:true
 	},
 	name:{
 		type:String,
-		require:true
+		required:true
+	},
+	alias:{
+		type:String,
+		required:true,
+		unique:true
 	},
 	company:{
 		type:Number,
-		require:true
+		required:true,
 	},
 	category:{
-		type:Number,//đầm xòe, đầm suông, áo sơ mi cổ đứng, áo sơ mi tay ngắn, áo sơ mi tay dài,...
-		require:true
-	},
-	categogy_for:
-	{
 		type:Number,
-		require:true
+		required:true,
+	},
+	image:{
+		type:Object,
+		default:[]
 	},
 	description:{
-		tyype:String
+		type:Object,
+		default:{}
+	},
+	product:{
+		type:Object,
+		default:[]
 	}
 });
 ItemSchema.plugin(AutoIncrement, {id:'productIdAuto',inc_field: 'id'});

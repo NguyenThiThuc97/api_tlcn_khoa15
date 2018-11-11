@@ -10,16 +10,20 @@ const ItemSchema=new Schema(
 {
 	id:{
 		type:Number,
-		require:true,
 		unique:true
 	},
 	name:{
 		type:String,
-		require:true
+		required:true
+	},
+	age_type:
+	{
+		type:String,
+		required:true
 	},
 	description:{
-		type:String,
-		require:true
+		type:Object,
+		default:{}
 	}
 });
 ItemSchema.plugin(AutoIncrement, {id:'catIdAuto',inc_field: 'id'});

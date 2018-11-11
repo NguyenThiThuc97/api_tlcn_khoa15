@@ -17,7 +17,8 @@
     "concurrently": "^4.0.1",
     "express": "^4.16.3",
     "mongoose": "^5.3.1",
-    "mongoose-sequence": "^4.0.1"
+    "mongoose-sequence": "^4.0.1",
+    "mongoose-transactions": "^1.1.1"
   },
   "devDependencies": {
     "nodemon": "^1.18.4"

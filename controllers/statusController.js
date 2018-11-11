@@ -1,7 +1,7 @@
-const Item=	require('../model/size');
-module.exports = {
+const Item = require('../model/status');
 
-    home : function(req, res){
+module.exports = {
+	home : function(req, res){
        //do something
        	Item.find()
 		.sort({Date:-1})
@@ -11,7 +11,6 @@ module.exports = {
        //do something
         var id = req.params.id;
         Item.findOne({'id':id}).then(item=>res.json(item));
-        // select({ "name": 1, "_id": 0});
     },
     create : function(req, res){//need test
        //do something
@@ -44,5 +43,4 @@ module.exports = {
                   res.json({ message: 'Offer Deleted!'});
           });
     }
-
 }

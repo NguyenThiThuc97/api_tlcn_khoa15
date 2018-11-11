@@ -10,32 +10,31 @@ const ItemSchema=new Schema(
 {
 	id:{
 		type:Number,
-		require:true,
 		unique:true
 	},
 	name:{
 		type:String,
-		require:true
+		required:true
 	},
 	mail:{
 		type:String,
-		require:true
+		default:""
 	},
 	phone:{
 		type:String,
-		require:true
+		required:true
 	},
 	website:{
 		type:String,
-		require:true
+		default:""
 	},
 	fanpage:{
 		type:String,
-		require:true
+		default:""
 	},
 	address:{
 		type:String,
-		require:true
+		required:true
 	}
 });
 

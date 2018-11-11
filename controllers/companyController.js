@@ -29,7 +29,7 @@ module.exports = {
         var websites =req.body.website;
         var fanpages =req.body.fanpage;
         var addresss =req.body.address;
-        const newItem=new ItemCompany(
+        const newItem=new Item(
           {
             name:names,
             mail:mails,

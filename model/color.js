@@ -10,12 +10,11 @@ const ItemSchema=new Schema(
 {
 	id:{
 		type:Number,
-		require:true,
 		unique:true
 		},
 	name:{
 		type:String,
-		require:true
+		required:true
 	}
 });
 ItemSchema.plugin(AutoIncrement, {id:'colorIdAuto',inc_field: 'id'});

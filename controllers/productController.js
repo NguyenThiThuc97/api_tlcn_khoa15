@@ -1,63 +1,35 @@
 const itemProduct=	require('../model/product');
 const itemCompany=  require('../model/company');
-const itemCategory=  require('../model/category_detail');
 const itemProductDetail= require('../model/product_detail');
 const productUtil= require('../util/productUtil');
 
 module.exports = {
     
     home : function(req, res){
-       //do something
-      productUtil.getAllProduct().then(function(result)
+      productUtil.home().then(function(result)
       {
         res.json(result);
       }) 	
     },
-    view : function(req, res){
+    view : function(req, res){//id=>product_detail
        //do something
-        var id = req.params.id;
-        var obj=[];
-        // Item.findOne({'id':id}).then(item=>res.json(item));
-        productUtil.getAllProduct().then(function(result)
+      var id = req.params.id;
+      productUtil.view(id).then(function(result)
         {
-          for(var i=0;i<result.length;i++)
-          {
-            if(result["id"]===id)
-            {
-              obj.push("")
-            }
-          }
-          return obj;
-          // productUtil.findProductId()
-        }) 
-        // select({ "name": 1, "_id": 0});
+          res.json(result);
+        });
     },
     create : function(req, res){
-       //do something
-        var names = req.body.name;
-        var company = req.body.company;
-        var category = req.body.category;
 
-        productUtil.testForCreate(company, category).then(function(result)
+        productUtil.saveProduct(req).then(function(result)
         {
-          if(result===true)// can create a new product
-          {
-            const newItem=new itemProduct(
-            {
-              name:names,
-              company:company,
-              category:category
-            });
-            newItem.save().then(item=>res.json(item));//return a new product
-          }
-          else
-            res.json(result);//result=false;
+          res.json(result);
         })
         
     },
     createProductDetail:function(req, res)
     {
-      //test for create product_detail
+      productUtil.saveProductDetail(req, res);
     },
     update : function(req, res){//need test
        //do something
@@ -65,13 +37,16 @@ module.exports = {
         var names = req.body.name;
         var company = req.body.company;
         var category = req.body.category;
-        productUtil.testForCreate(company, category).then(function(result)
+        var category_for = req.body.category_for;
+        var price = req.body.price;
+        var description = req.body.description;
+        productUtil.testForCreate(company, category, category_for).then(function(result)
         {
           if(result===true)
           {
-            itemProduct.findOneAndUpdate({'id':id}, {"$set":{"name":names, "company":company, "category":category}}, function(err) {
+            itemProduct.findOneAndUpdate({'id':id}, {"$set":{"name":names, "company":company, "category":category, "category_for":category_for, "price":price, "description":description}}, function(err) {
               if (err)
-                  res.send("fail");
+                  res.json({message:"fail when update"});
               else
                   res.json({ message: 'Offer Updated!'});
             });
@@ -81,15 +56,45 @@ module.exports = {
         })
         
     },
-    delete : function(req, res){
+    updateProductDetail:function(req, res)
+    {
+      //test for create product_detail
+      var id = req.body.id;//product_id
+      var old_size = req.body.old_size;
+      var old_color = req.body.old_color;
+      var new_size = req.body.new_size;
+      var new_color = req.body.new_color;
+      var quantity = req.body.quantity;
+      var summary = req.body.summary; 
+      productUtil.testForCreateProductDetail(id, new_size,new_color).then(function(result)
+      {
+        itemProductDetail.findOneAndUpdate({"id":id, "color":old_color, "size":old_size}, {"$set":{"size":new_size, "color":new_color, "quantity":quantity, "summary":summary}}, function(err)
+        {
+          if(err)
+          {
+            res.json({message:"fail when update product detail"});
+          }
+          else
+            res.json({message:"update product detail successfully"});
+        })
+      })
+    },
+    deleteProduct : function(req, res){
        //do something
-        var id = req.params.id;
-        Item.findOneAndRemove({'id':id}, function(err) {
-              if (err)
-                  res.send(err);
-              else
-                  res.json({ message: 'Offer Deleted!'});
-          });
+        productUtil.deleteProduct(req).then(function(result)
+        {
+          res.json(result)
+        })
+    },
+    deleteProductDetail:function(req, res)
+    {
+      productUtil.deleteProductDetail(req).then(function(result)
+      {
+        if(result.ok === 1 && result.n !== 0)
+                res.json({message:"success"})
+            else
+              res.json({message: "fail"});
+      })
     }
 
 }

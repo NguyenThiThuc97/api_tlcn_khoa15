@@ -21,7 +21,12 @@ module.exports = {
             name:names
           });
         
-        newItem.save().then(item=>res.json(item));
+        newItem.save().then(item=>
+          res.json(item)
+          ).catch(function(err)
+          {
+            res.json({message:err});
+          });
     },
     update : function(req, res){//need test
        //do something

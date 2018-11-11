@@ -10,26 +10,40 @@ const ItemSchema=new Schema(
 {
 	id:{
 		type:Number,
-		require:true,
 		unique:true
 	},
 	status:{
-		type:Boolean,
-		default:false
+		type:String,
+		default:"Can Update or Delete"
 	},
 	date_create:{
 		type:Date,
 		default:Date.now
 	},
-	user_test:Number,
+	user_test:{
+		type:Number,
+		default:0
+	},
 	date_test:{
 		type:Date,
 		default:Date.now
 	},
-	total:Number,
+	total:{//send from client
+		type:Number,
+		default:0
+	},
 	customer:{
 		type:Number,
-		require:true
+		required:true
+	},
+	note:
+	{
+		type:String,
+		default:""
+	},
+	orders_detail:{
+		type:Object,
+		default:[]
 	}
 });
 ItemSchema.plugin(AutoIncrement, {id:'ordersIdAuto',inc_field: 'id'});

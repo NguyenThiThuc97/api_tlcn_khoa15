@@ -1,171 +1,136 @@
-const itemProduct=	require('../model/product');
-const itemCompany=  require('../model/company');
-const itemCategory=  require('../model/category_detail');
+  const itemProduct=	require('../model/product');
 const itemProductDetail= require('../model/product_detail');
+const itemCompany=  require('../model/company');
 const categoryUtil= require('../util/categoryUtil');
-const itemSize= require('../model/size');
-const itemColor= require('../model/color');
+const itemColor = require('../model/color');
+const itemCategory = require('../model/category');
 
-module.exports=
+module.exports =
 {
-	getProduct:function()//array "id" products
-	{
-		var productId=[];
-		var productCategory=[];
-		var productCompany=[];
-		var productName=[];
-		return itemProduct.find().then(function(result)
-		{
-			for(var val of result)
-			{
-				productId.push(val["id"]);
-				productCategory.push(val["category"]);
-				productCompany.push(val["company"]);
-				productName.push(val["name"]);
-			}
-			var size=productId.length;
-			return {productId, productCategory, productCompany, productName, size};
-		}).catch(function(err)
-		{
-			return "fail";
-		});
-	},
-	getCompany:function()
-	{
-		return module.exports.getProduct().then(function(company)
-		{
-			return Promise.all(company["productCompany"].map(val=>
-			{
-				return itemCompany.findOne({"id":val}).exec();
-			})).then(function(result)
-			{
-				var arrCompanyName=[];
-				for(var val of result)
-				{
-					arrCompanyName.push(val["name"]);
-				}
-				return arrCompanyName;
-			}).catch(function(err)
-			{
-				return "fail";
-			})
-		})
-	},
-	getCategory:function()//!!!
-	{
-		return module.exports.getProduct().then(function(category_detail_id)
-		{
-			return categoryUtil.getAllCatDetail().then(function(category_detail_name)
-			{
-				var n=category_detail_id["size"];
-				var na=category_detail_name.length;
-				//convert category_detail_name to array;
-				// var category_detail_names = JSON.parse(category_detail_name);
-				// console.log(category_detail_name[0]);
-				var obj=[];
-				for(var i=0;i<n;i++)
-				{
-					for(var j=0;j<na;j++)
-					{
-						if(category_detail_id["productCategory"][i]===category_detail_name[j]["id"])
-						{
-							// obj.push({"id":category_detail_id["productId"][i], "category":{"category":category_detail_name[j]["category"], "category_for":category_detail_name[j]["category_for"]}});
-							obj.push({"category":category_detail_name[j]["category"], "category_for":category_detail_name[j]["category_for"]});
-						}
-					}
-				}
-				return obj;//product_id, category_name, category_for_name
+  saveProduct:function(req)
+  {
+    var id = req.body.id;
+    var names = req.body.name;
+    var alias = req.body.alias;
+    var company = req.body.company;//company->id
+    var category = req.body.category;//category->id
+    var description = req.body.description;
+    var image = req.body.image;
 
-
-			})
-			
-		})
-	},
-	getAllProduct:function()
-	{
-		return module.exports.getProduct().then(function(product)
+    return module.exports.testInputDataAddProduct(category, company).then(function(testInputData)
+    {
+      if(testInputData === true)
+      {
+        if(id)//update
         {
-          return module.exports.getCompany().then(function(result)
-          {
-            return module.exports.getCategory().then(function(result1)
-            {
-              var n=product["size"];
-              var obj=[];
-              for(var i=0;i<n;i++)
-              {
-                obj.push({"id":product["productId"][i], "name":product["productName"][i], "company":result[i], "category":result1[i]});
-              }
-              return obj;
-
-            });
-          });
-        })
-	},
-	testForCreate:function(company, category)
-	{
-		var test_company=itemCompany.find({"id":company});
-		//test company exists
-        return test_company.count().then((countCompany)=>
-        {
-          if(countCompany!==0)
-          {
-            //test category_for is exist
-            var test_cat_detail=itemCategory.find({"id":category});
-            return test_cat_detail.count().then((countCatDetail)=>
-            {
-              if(countCatDetail!==0)
-              {
-                var a=itemProduct.find({"company":company, "category":category});
-                return a.count().then((count)=>
-                  {
-                    if(count!==0)
-                    {
-                      // res.json({message: 'record is existed!'});
-                      return {message: 'record is existed!'};
-                    }
-                    else
-                    {
-                      return true;
-                    }
-                  });           
-              }
+          return itemProduct.findOneAndUpdate({'id':id}, {"$set":{"name":names, "alias":alias, "company":company, "category":category, "description":description, "image":image}}, function(err, result) {
+              if (err)
+                  return {message:err};
               else
-              {
-                return {message: 'category is not existed'};
-              }
-            })
-
-          }
-          else
+                  return result;
+            });
+        }
+        else//create
+        {
+          const newItem = new itemProduct(
           {
-            return {message: 'company is not existed!'};
-          }
-        });
-
-	},
-	findProductId:function(id)
-	{
-		return itemProductDetail.find({"id":id}).then(function(result)
-		{
-			return Promise.all(result["size"].map(val=>
-			{
-				return itemSize.findOne({"id":val}).exec();
-			})).then(function(sizeResult)
-			{
-				return Promise.all(result["color"].map(val1=>
-				{
-					return itemColor.findOne({"id":val1}).exec();
-				})).then(function(colorResult)
-				{
-					var n=result.length;
-					var obj=[];
-					for(var i=0;i<n;i++)
-					{
-						obj.push({"size":sizeResult[i],"color":colorResult[i]});
-					}
-					return obj;
-				})
-			})
-		})
-	}
+            name:names,
+            alias:alias,
+            company:company,
+            category:category,
+            description:description,
+            image:image,
+          });
+          return newItem.save().then(function(result)
+          {
+            return result;
+          });//return a new product
+        }
+      }
+      else
+      {
+        return {message:testInputData}
+      }
+    })
+  },
+  saveProductDetail:function(req, res)//object input "product_detail"
+  {
+    var productDetail = req.body.product_detail;
+    return itemProduct.update({"id": productDetail[0]["product_id"]}, {"$push" : {"product":{"$each":productDetail}}}, {"$upsert":true}, function(err, result)
+        {
+          if(err)
+            res.json(err);
+          else
+            res.json(result)
+        })
+  },
+  deleteProduct:function(req)
+  {
+    var id = req.params.id;
+    if(id)
+    {
+      return itemProduct.findOneAndRemove({"id":id}).then(result=>
+      {
+        return result["id"];
+      })
+    }
+  },
+  deleteProductDetail : function(req)
+  {
+    var product_id = parseInt(req.params.product_id);
+    var size = req.params.size;
+    var color = parseInt(req.params.color);
+    return itemProduct.update({}, {"$pull":{"product":{"color":color, "product_id":product_id, "size":size}}}, { multi: true }, function(err, result)
+    {
+      return result;
+    })
+  },
+  testInputDataAddProduct:function(category, company)
+  {
+    return itemCategory.find({"id":category}).count().then(function(countCategory)
+    {
+      if(countCategory !== 0)
+      {
+        return itemCompany.find({"id":company}).count().then(function(countCompany)
+        {
+          if(countCompany !== 0)
+            return true;
+          else
+            return {message:"Company ID is not existed"}
+        })
+      }
+      else
+        return {message:"Category is not existed"}
+    })
+  },
+  testInputDataAddProductDetail : function(iData)
+  {
+    return Promise.all(iData.map(item=>
+    {
+      return itemProduct.find({"product.product_id":item["product_id"], "product.size":item["size"], "product.color":item["color"]}, function(err, result)
+      {
+        return result;
+      })
+    })).then(function(result)
+    {
+      for(var val of result)
+        if(val===null)
+          return false;
+      return true;
+    })
+  },
+  home:function()
+  {
+    return itemProduct.find().then(function(result)
+    {
+      return result;
+    })
+  },
+  view:function(id)
+  {
+    return itemProduct.findOne({"id":id}).then(function(productInfor)
+    {
+      return productInfor;
+    })
+  }
 }

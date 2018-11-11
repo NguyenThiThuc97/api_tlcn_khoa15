@@ -8,32 +8,25 @@ const Schema=mongoose.Schema;
 //create Schema
 const ItemSchema=new Schema(
 {
-	id:{
+	product_id:{
 		type:Number,
-		require:true
 	},
 	size:{
-		type:Number,
-		require:true
+		type:String,
+		required:true
 	},
 	color:{
 		type:Number,
-		require:true
+		required:true
 	},
 	quantity:{
 		type:Number,
-		require:true
+		required:true
 	},
-	is_discount:{
-		type:Boolean,
-		require:true
-	},
-	discount_price:{
+	price:
+	{
 		type:Number,
-		require:true
-	},
-	summary:{
-		type:String
+		required:true
 	}
 	// with id(product)-id(size)-id(color) we have a product_detail
 });
