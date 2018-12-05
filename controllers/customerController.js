@@ -1,6 +1,10 @@
 const Item=	require('../model/customer');
 const crypto = require('crypto');
 const userUtil= require('../util/userUtil');
+
+var multer = require('multer')
+var uploadCustomer = multer({dest : "images/customer"})
+
 module.exports = {
 
     home : function(req, res){
@@ -15,23 +19,6 @@ module.exports = {
         Item.findOne({'id':id}).then(item=>res.json(item));
         // select({ "name": 1, "_id": 0});
     },
-    login:function(req, res)
-    {
-      var userType = req.body.userType;
-      var username = req.body.username;
-      var password = req.body.password;
-      userUtil.login(userType, username, password).then(function(result)
-      {
-        if(result===true)
-        {
-          res.json({message:"success"});
-        }
-        else
-        {
-          res.json(result);
-        }
-      })
-    },
     create : function(req, res){//need test
        //do something
         var username = req.body.username;
@@ -40,8 +27,13 @@ module.exports = {
         var mail = req.body.mail;
         var address = req.body.address;
         var password = req.body.password;
+        var image = req.file
+        var imageN = ""
+        if(image){
+            imageN = image.originalname
+        }
+        
         // var password_encrypt=crypto.createHmac('sha256', password).update('123').digest('hex');
-        var image = req.body.image;
 
         const newItem=new Item(
           {
@@ -51,10 +43,17 @@ module.exports = {
             mail:mail,
             address:address,
             password:password,
-            image:image
+            image : imageN
           });
+          newItem.save().then((item, err)=> {
+            if(!err){
+                res.json({message: "success"})
+            }
+            else{
+                res.json({message: "error"})
+            }
+        });
         
-        newItem.save().then(item=>res.json(item));
     },
     update : function(req, res){//need test
        //do something
@@ -64,9 +63,13 @@ module.exports = {
         var phone = req.body.phone;
         var mail = req.body.mail;
         var address = req.body.address;
-        var image = req.body.image;
+        var image = req.file
+        var imageN = ""
+        if(image){
+            imageN = image.originalname
+        }
 
-        Item.findOneAndUpdate({'id':id}, {"$set":{"username":username, "fullname":fullname, "phone":phone, "mail":mail, "address":address, "image":image}}, function(err) {
+        Item.findOneAndUpdate({'id':id}, {"$set":{"username":username, "fullname":fullname, "phone":phone, "mail":mail, "address":address, "image":imageN}}, function(err) {
               if (err)
                   res.send("fail");
               else

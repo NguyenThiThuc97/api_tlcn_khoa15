@@ -1,7 +1,12 @@
 const ItemEmployee=	require('../model/user');
 const ItemCustomer=	require('../model/customer');
-
 const ItemDepartment= require('../model/department');
+const path = require("path");
+const multer = require("multer");
+
+
+const upload = multer({dest : 'image/customer/'})
+
 module.exports=
 {
 	getUser:function()
@@ -42,7 +47,7 @@ module.exports=
 
 		})
 	},
-	login:function(userType, username, password)//password is encrypt
+	login : function(userType, username, password)//password is encrypt
 	{
 		if(userType!=="employee"||userType!=="customer"||username.length===0||password.length===0)
 		{
@@ -70,6 +75,5 @@ module.exports=
 				return true;
 			})
 		}
-
 	}
 }

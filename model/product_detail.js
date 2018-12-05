@@ -27,6 +27,11 @@ const ItemSchema=new Schema(
 	{
 		type:Number,
 		required:true
+	},
+	date_received:
+	{
+		type:Date,
+		default:Date.now
 	}
 	// with id(product)-id(size)-id(color) we have a product_detail
 });

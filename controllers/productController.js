@@ -95,6 +95,13 @@ module.exports = {
             else
               res.json({message: "fail"});
       })
+    },
+    getProductType: function(req, res)//man or woman
+    {
+      productUtil.getProductType(req).then(function(result)
+      {
+        res.json(result);
+      })
     }
 
 }

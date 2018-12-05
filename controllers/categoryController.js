@@ -26,7 +26,7 @@ module.exports =
 	{
 		categoryUtil.save(req).then(function(result)
 		{
-			res.json(result);
+			res.json(result["id"]);
 		})
 	},
 	delete : function(req, res)

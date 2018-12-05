@@ -46,9 +46,11 @@ module.exports = {
         var id = req.body.id;
         var name = req.body.name;
         var mail = req.body.mail;
+        var website = req.body.website;
+        var fanpage = req.body.fanpage;
         var phone = req.body.phone;
         var address = req.body.address;
-        Item.findOneAndUpdate({'id':id}, {"$set":{"name":name,"mail":mail, "phone":phone, "address":address}}, function(err) {
+        Item.findOneAndUpdate({'id':id}, {"$set":{"name":name,"mail":mail, "website" : website, "fanpage" : fanpage, "phone":phone, "address":address}}, function(err) {
               if (err)
                   res.send("fail");
               else

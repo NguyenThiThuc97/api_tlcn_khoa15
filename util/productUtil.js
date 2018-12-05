@@ -1,4 +1,4 @@
-  const itemProduct=	require('../model/product');
+const itemProduct=	require('../model/product');
 const itemProductDetail= require('../model/product_detail');
 const itemCompany=  require('../model/company');
 const categoryUtil= require('../util/categoryUtil');
@@ -53,6 +53,7 @@ module.exports =
       }
     })
   },
+
   saveProductDetail:function(req, res)//object input "product_detail"
   {
     var productDetail = req.body.product_detail;
@@ -64,6 +65,7 @@ module.exports =
             res.json(result)
         })
   },
+  
   deleteProduct:function(req)
   {
     var id = req.params.id;
@@ -75,6 +77,7 @@ module.exports =
       })
     }
   },
+
   deleteProductDetail : function(req)
   {
     var product_id = parseInt(req.params.product_id);
@@ -85,7 +88,8 @@ module.exports =
       return result;
     })
   },
-  testInputDataAddProduct:function(category, company)
+
+  testInputDataAddProduct : function(category, company)
   {
     return itemCategory.find({"id":category}).count().then(function(countCategory)
     {
@@ -103,6 +107,7 @@ module.exports =
         return {message:"Category is not existed"}
     })
   },
+
   testInputDataAddProductDetail : function(iData)
   {
     return Promise.all(iData.map(item=>
@@ -119,18 +124,114 @@ module.exports =
       return true;
     })
   },
+
   home:function()
   {
-    return itemProduct.find().then(function(result)
+    return itemProduct.find().lean().then(function(result)
     {
-      return result;
+      return Promise.all(result.map(item=>
+      {
+        var category = item.category;
+        var company = item.company;
+        return itemCompany.find({"id":company}).then(function(com)
+        {
+          item.CompanyName = com[0]["name"];
+          return itemCategory.find({"id":category}).then(function(cat)
+          {
+            item.CategoryName = cat[0]["name"]+ " " + cat[0]["age_type"];
+            return item;
+          })
+        })
+      })).then(function(result)
+      {
+        return result;
+      }).catch(function(err)
+      {
+        return {message:err}
+      })
     })
   },
-  view:function(id)
+
+  view : function(id)
   {
-    return itemProduct.findOne({"id":id}).then(function(productInfor)
+    return itemProduct.find({"id":id}).lean().then(function(result)
     {
-      return productInfor;
+      return Promise.all(result.map(item=>
+      {
+        var category = item.category;
+        var company = item.company;
+        return itemCompany.find({"id":company}).then(function(com)
+        {
+          item.CompanyName = com[0]["name"];
+          return itemCategory.find({"id":category}).then(function(cat)
+          {
+            item.CategoryName = cat[0]["name"]+ " " + cat[0]["age_type"];
+            return item;
+          })
+        })
+      })).then(function(result)
+      {
+        return result;
+      }).catch(function(err)
+      {
+        return {message:err}
+      })
     })
+  },
+  getProductType: function(req)//male or female
+  {
+    var type = req.params.type;
+    console.log(type);
+    return itemProduct.find().lean().then(function(product)
+      {
+        return Promise.all(product.map(item=>
+        {
+          return itemCategory.find({"id":item["category"]}).then(function(cat)
+          {
+            if(cat[0]["age_type"] === type)
+            {
+              return module.exports.view(item["id"]).then(function(result)
+              {
+                return result;
+              })
+            }
+          })
+        })).then(function(result)
+        {
+          return result;
+        })
+      })
+  },
+  getProductNewArrival : function(flag)//get limit or not
+  {
+    if(flag)
+    {
+      return itemProduct.find().sort({date : -1}).then(function(allProductDetail)
+      {
+        return allProductDetail.limit(10);
+      })
+    }
+    else
+    {
+      return itemProduct.find().sort({date : -1}).then(function(allProductDetail)
+      {
+        return allProductDetail;
+      })
+    }
+    
+  },
+
+  storeImageToServer : function(image, location)//object array stored link of image in local
+  {
+    
+  },
+
+  deleteImageFromServer : function(id){
+    
+  },
+
+  getHotProduct : function()
+  {
+    
   }
 }

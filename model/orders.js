@@ -36,8 +36,7 @@ const ItemSchema=new Schema(
 		type:Number,
 		required:true
 	},
-	note:
-	{
+	note:{
 		type:String,
 		default:""
 	},

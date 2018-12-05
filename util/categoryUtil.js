@@ -1,7 +1,7 @@
-const ItemCat=	require('../model/category');
-module.exports=
+const ItemCat =	require('../model/category');
+module.exports =
 {
-	allCategory:function()
+	allCategory : function()
 	{
 		return ItemCat.find().then(function(allCategory)
 		{
@@ -20,11 +20,11 @@ module.exports=
 			{
 				if(err)
 				{
-					return result;
+					return {message:err};
 				}
 				else
 				{
-					return {message:err};
+					return result["id"];
 				}
 			})
 			
@@ -53,7 +53,7 @@ module.exports=
 				return {message:err};
 			}
 			else
-				return result;
+				return result["id"];
 		})
 	}
 }

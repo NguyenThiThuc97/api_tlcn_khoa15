@@ -16,8 +16,7 @@ const ItemSchema=new Schema(
 		type:String,
 		required:true
 	},
-	age_type:
-	{
+	age_type:{
 		type:String,
 		required:true
 	},

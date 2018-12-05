@@ -1,9 +1,22 @@
-const express=require("express");
-const app=express();
-const router=express.Router();
+const express = require("express");
+const app = express();
+const router = express.Router();
+var multer = require("multer")
+
+var storageCustomer = multer.diskStorage({
+    destination : function (req, file, cb){
+        cb(null, 'images/customer')
+    },
+    filename : function (req, file, cb) {
+        if(file){
+            cb(null, file.originalname)
+        }
+      }
+})
+var uploadCustomer = multer({ storage: storageCustomer })
 
 /*1. category*/ 
-const category=	require('../controllers/categoryController');
+const category = require('../controllers/categoryController');
 //category
 router.route('/category').get(category.home);
 router.route('/category/:id').get(category.view);
@@ -12,7 +25,7 @@ router.route('/category/update').post(category.update);
 router.route('/category/delete/:id').get(category.delete);
 
 /*2. color*/
-const color=	require('../controllers/colorController');
+const color =	require('../controllers/colorController');
 router.route('/color').get(color.home);
 router.route('/color/:id').get(color.view);
 router.route('/color/create').post(color.create);
@@ -20,7 +33,7 @@ router.route('/color/update').post(color.update);
 router.route('/color/delete/:id').get(color.delete);
 
 /*3. company*/
-const company=	require('../controllers/companyController');
+const company =	require('../controllers/companyController');
 router.route('/company').get(company.home);
 router.route('/company/:id').get(company.view);
 router.route('/company/create').post(company.create);
@@ -28,12 +41,14 @@ router.route('/company/update').post(company.update);
 router.route('/company/delete/:id').get(company.delete);
 
 /*4. customer*/
-const customer=	require('../controllers/customerController');
-router.route('/customer/login').post(customer.login);
+const customer =	require('../controllers/customerController');
 router.route('/customer').get(customer.home);
 router.route('/customer/:id').get(customer.view);
-router.route('/customer/create').post(customer.create);
-router.route('/customer/update').post(customer.update);
+router.route('/customer/create').post(uploadCustomer.single("image"), customer.create);
+// router.route('/customer/create').post(uploadCustomer.single("image"), (req, res) => {
+//     console.log(req)
+// });
+router.route('/customer/update').post(uploadCustomer.single("image"), customer.update);
 router.route('/customer/update_pwd').post(customer.update_pwd);
 router.route('/customer/delete/:id').get(customer.delete);
 
@@ -90,5 +105,12 @@ router.route('/product_sale/:product/:size/:color/:sale_code').get(product_sale.
 router.route('/product_sale/create').post(product_sale.create);
 router.route('/product_sale/update').post(product_sale.update);
 router.route('/product_sale/delete/:product/:size/:color/:sale_code').get(product_sale.delete);
+
+
+// login:
+router.route('/login').post(user.login);
+
+//get product type
+router.route('/product_type/:type').get(product.getProductType);
 
 module.exports = router;
