@@ -7,7 +7,7 @@ const itemCategory = require('../model/category');
 
 module.exports =
 {
-  saveProduct:function(req)
+  saveProduct : function(req)
   {
     var id = req.body.id;
     var names = req.body.name;
@@ -15,7 +15,12 @@ module.exports =
     var company = req.body.company;//company->id
     var category = req.body.category;//category->id
     var description = req.body.description;
-    var image = req.body.image;
+    var image = req.file;
+    var imageN = ""
+        
+    if(image){
+        imageN = image.originalname
+    }
 
     return module.exports.testInputDataAddProduct(category, company).then(function(testInputData)
     {
@@ -23,12 +28,25 @@ module.exports =
       {
         if(id)//update
         {
-          return itemProduct.findOneAndUpdate({'id':id}, {"$set":{"name":names, "alias":alias, "company":company, "category":category, "description":description, "image":image}}, function(err, result) {
+          if(image){
+              imageN = image.originalname
+          }
+          if(imageN.length === 0){//not update
+            return itemProduct.findOneAndUpdate({'id':id}, {"$set":{"name":names, "alias":alias, "company":company, "category":category, "description":description}}, function(err, result) {
+                if (err)
+                    return {message:err};
+                else
+                    return result;
+              });
+          }
+          else{
+            return itemProduct.findOneAndUpdate({'id':id}, {"$set":{"name":names, "alias":alias, "company":company, "category":category, "description":description, "image":imageN}}, function(err, result) {
               if (err)
                   return {message:err};
               else
                   return result;
             });
+          }
         }
         else//create
         {
@@ -39,7 +57,7 @@ module.exports =
             company:company,
             category:category,
             description:description,
-            image:image,
+            image:imageN,
           });
           return newItem.save().then(function(result)
           {
@@ -56,14 +74,70 @@ module.exports =
 
   saveProductDetail:function(req, res)//object input "product_detail"
   {
-    var productDetail = req.body.product_detail;
-    return itemProduct.update({"id": productDetail[0]["product_id"]}, {"$push" : {"product":{"$each":productDetail}}}, {"$upsert":true}, function(err, result)
+    // var productDetail = req.body.product_detail;
+    // var date_received = Date.now
+    // productDetail.push(date_received)
+    // // productDetail.date_received = Date.now
+    // return itemProduct.update({"id": productDetail["product_id"]}, {"$push" : {"product":{"$each":productDetail}}}, {"$upsert":true}, function(err, result)
+    //     {
+    //       if(err)
+    //         res.json(err);
+    //       else
+    //         res.json(result)
+    //     })
+
+    return module.exports.testInputDataAddProductDetail(req.body.product_id, req.body.size, req.body.color).then(testInputDataProductDetail => {//
+      
+      //create
+      
+      if(testInputDataProductDetail){
+        var productDetail = {}
+
+        productDetail.product_id = req.body.product_id
+        productDetail.size = req.body.size
+        productDetail.color = req.body.color
+        productDetail.price = req.body.price
+        productDetail.quantity  = req.body.quantity
+        productDetail.date_received  = new Date()
+        // console.log(productDetail.date_received.getDate())
+
+        return itemProduct.update({"id" : productDetail.product_id}, {$push : {"product" : productDetail}}).then(result => {
         {
-          if(err)
-            res.json(err);
-          else
-            res.json(result)
+            if(result.n == 1 && result.nModified == 1 && result.ok == 1)
+              res.json({message : "create product detail successfull", statusAdd : true})
+            else
+              res.json({message : "create product detail fail", statusAdd : false})
+        }
         })
+      }
+      else {
+
+        //update
+
+        var id = req.body.product_id;//product_id
+        var size = req.body.size;
+        var color = req.body.color;
+        var quantity = req.body.quantity;
+        var price = req.body.price; 
+        
+        var productDetailUpdate  = {
+          product_id : id,
+          size : size,
+          color : color,
+          price : price,
+          quantity : quantity
+        }
+
+        if(req.body.date_received){
+          productDetailUpdate.date_received = new Date(req.body.date_received)
+        }
+
+        return itemProduct.findOneAndUpdate({"product" : {$elemMatch : {"product_id" : id, "color" : color, "size" : size}}}, 
+          {$set : {"product.$" : productDetailUpdate}}, { upsert: true }).then(resultUpdate => {
+            res.json({message : resultUpdate})
+          })
+        }
+    })
   },
   
   deleteProduct:function(req)
@@ -108,22 +182,35 @@ module.exports =
     })
   },
 
-  testInputDataAddProductDetail : function(iData)
-  {
-    return Promise.all(iData.map(item=>
-    {
-      return itemProduct.find({"product.product_id":item["product_id"], "product.size":item["size"], "product.color":item["color"]}, function(err, result)
-      {
-        return result;
-      })
-    })).then(function(result)
-    {
-      for(var val of result)
-        if(val===null)
-          return false;
-      return true;
-    })
+  testInputDataAddProductDetail : function(id, new_size,new_color){
+    // return Promise.all(iData.map(item=>
+    // {
+    //   return itemProduct.find({"product.product_id":item["product_id"], "product.size":item["size"], "product.color":item["color"]}, function(err, result)
+    //   {
+    //     return result;
+    //   })
+    // })).then(function(result)
+    // {
+    //   for(var val of result)
+    //     if(val===null)
+    //       return false;
+    //   return true;
+    // })
+    var product_id = parseInt(id)
+    var size = new_size
+    var color = parseInt(new_color)
+    return itemProduct.findOne({"id" : product_id},{"product" : {$elemMatch : {"product_id" : product_id, "color" : color, "size" : size}}})
+                        .then(res => {
+                          
+                          if(res.product.length === 0){
+                            return true
+                          }
+                          else{
+                            return false
+                          }
+                        })
   },
+
 
   home:function()
   {
@@ -219,6 +306,15 @@ module.exports =
       })
     }
     
+  },
+
+  viewProductDetail : function(req, res){
+    var product_id = parseInt(req.params.product_id)
+    var size = req.params.size
+    var color = parseInt(req.params.color)
+    return itemProduct.findOne({"id" : product_id},{"product" : {$elemMatch : {"product_id" : product_id, "color" : color, "size" : size}}}).then(result =>{
+      return result
+    })
   },
 
   storeImageToServer : function(image, location)//object array stored link of image in local

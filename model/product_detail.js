@@ -23,13 +23,11 @@ const ItemSchema=new Schema(
 		type:Number,
 		required:true
 	},
-	price:
-	{
+	price:	{
 		type:Number,
 		required:true
 	},
-	date_received:
-	{
+	date_received:	{
 		type:Date,
 		default:Date.now
 	}

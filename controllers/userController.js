@@ -4,8 +4,6 @@ const userUtil= require('../util/userUtil');
 const crypto = require('crypto');
 
 module.exports = {
-
-
     home : function(req, res){
       userUtil.getUser().then(function(result)
       {
@@ -18,15 +16,15 @@ module.exports = {
       var userType = req.body.userType;
       var username = req.body.username;
       var password = req.body.password;
-      userUtil.login(userType, username, password).then(function(result)
-      {
-        if(result===true)
+      
+      userUtil.login(userType, username, password).then(result => {
+        if(result === true)
         {
-          res.json({message:"success"});
+          res.json({message:"success", statusLogin: true});
         }
         else
         {
-          res.json(result);
+          res.json({result, statusLogin : false});
         }
       })
 
@@ -51,6 +49,8 @@ module.exports = {
         var department=req.body.department;
         var image = req.body.image;
 
+        var password_encrypted=crypto.createHmac('sha256', password).update('123').digest('hex');
+
         const newItem=new Item(
           {
             username:username,
@@ -58,7 +58,7 @@ module.exports = {
             phone:phone,
             mail:mail,
             address:address,
-            password:password,
+            password:password_encrypted,
             department:department,
             image:image
           });
@@ -86,7 +86,8 @@ module.exports = {
     update_pwd:function(req, res){
       var id = req.body.id;
       var pwd = req.body.password;
-      Item.findOneAndUpdate({'id':id}, {"$set":{"password":pwd}}, function(err) {
+      var password_encrypted = crypto.createHmac('sha256', password).update('123').digest('hex');
+      Item.findOneAndUpdate({'id':id}, {"$set":{"password":password_encrypted}}, function(err) {
               if (err)
                   res.send("fail");
               else

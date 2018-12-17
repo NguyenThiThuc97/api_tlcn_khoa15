@@ -6,7 +6,7 @@ const Schema=mongoose.Schema;
 
 
 //create Schema
-const ItemSchema=new Schema(
+const ItemSchema = new Schema(
 {
 	id:{
 		type:Number,
@@ -30,8 +30,8 @@ const ItemSchema=new Schema(
 		required:true,
 	},
 	image:{
-		type:Object,
-		default:[]
+		type:String,
+		default:""
 	},
 	description:{
 		type:Object,

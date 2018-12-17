@@ -29,20 +29,21 @@ module.exports = {
         var password = req.body.password;
         var image = req.file
         var imageN = ""
+        
         if(image){
             imageN = image.originalname
         }
         
-        // var password_encrypt=crypto.createHmac('sha256', password).update('123').digest('hex');
+        var password_encrypt=crypto.createHmac('sha256', password).update('123').digest('hex');
 
         const newItem=new Item(
           {
-            username:username,
-            fullname:fullname,
-            phone:phone,
-            mail:mail,
-            address:address,
-            password:password,
+            username : username,
+            fullname : fullname,
+            phone : phone,
+            mail : mail,
+            address : address,
+            password : password_encrypt,
             image : imageN
           });
           newItem.save().then((item, err)=> {
@@ -68,19 +69,31 @@ module.exports = {
         if(image){
             imageN = image.originalname
         }
-
-        Item.findOneAndUpdate({'id':id}, {"$set":{"username":username, "fullname":fullname, "phone":phone, "mail":mail, "address":address, "image":imageN}}, function(err) {
-              if (err)
-                  res.send("fail");
-              else
-                  res.json({ message: 'Offer Updated!'});
-          });
+        if(imageN.length === 0){//not update
+            
+            Item.findOneAndUpdate({'id':id}, {"$set":{"username":username, "fullname":fullname, "phone":phone, "mail":mail, "address":address}}, function(err) {
+                if (err)
+                    res.send("fail");
+                else
+                    res.json({ message: 'Offer Updated!'});
+            });
+        }
+        else{
+            
+            Item.findOneAndUpdate({'id':id}, {"$set":{"username":username, "fullname":fullname, "phone":phone, "mail":mail, "address":address, "image":imageN}}, function(err) {
+                if (err)
+                    res.send("fail");
+                else
+                    res.json({ message: 'Offer Updated!'});
+            });
+        }
+        
     },
     update_pwd:function(req, res){//password is encrypt before to server
       var id = req.body.id;
       var pwd = req.body.password;
-      // var password_encrypt=crypto.createHmac('sha256', pwd).update('123').digest('hex');
-      Item.findOneAndUpdate({'id':id}, {"$set":{"password":pwd}}, function(err) {
+      var password_encrypt=crypto.createHmac('sha256', pwd).update('123').digest('hex');
+      Item.findOneAndUpdate({'id':id}, {"$set":{"password":password_encrypt}}, function(err) {
               if (err)
                   res.send("fail");
               else

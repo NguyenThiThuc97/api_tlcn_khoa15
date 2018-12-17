@@ -3,6 +3,8 @@ const app = express();
 const router = express.Router();
 var multer = require("multer")
 
+//store image
+//customer
 var storageCustomer = multer.diskStorage({
     destination : function (req, file, cb){
         cb(null, 'images/customer')
@@ -15,6 +17,33 @@ var storageCustomer = multer.diskStorage({
 })
 var uploadCustomer = multer({ storage: storageCustomer })
 
+//employee
+var storageEmployee = multer.diskStorage({
+    destination : function (req, file, cb){
+        cb(null, 'images/employee')
+    },
+    filename : function (req, file, cb) {
+        if(file){
+            cb(null, file.originalname)
+        }
+      }
+})
+var uploadEmployee = multer({ storage: storageEmployee })
+
+//product
+var storageProduct = multer.diskStorage({
+    destination : function (req, file, cb){
+        cb(null, 'images/product')
+    },
+    filename : function (req, file, cb) {
+        if(file){
+            cb(null, file.originalname)
+        }
+      }
+})
+var uploadProduct = multer({ storage: storageProduct })
+
+//end stored image
 /*1. category*/ 
 const category = require('../controllers/categoryController');
 //category
@@ -72,13 +101,14 @@ router.route('/orders/delete/:id').get(orders.delete);
 const product=	require('../controllers/productController');
 router.route('/product').get(product.home);
 router.route('/product/:id').get(product.view);
-router.route('/product/create').post(product.create);
-router.route('/product/update').post(product.update);
+router.route('/product/create').post(uploadProduct.single("image"), product.create);
+router.route('/product/update').post(uploadProduct.single("image"), product.update);
 router.route('/product/delete/:id').get(product.deleteProduct);
 
 router.route('/product_detail/create').post(product.createProductDetail);
 router.route('/product_detail/update').post(product.updateProductDetail);
 router.route('/product_detail/delete/:product_id/:size/:color').get(product.deleteProductDetail);
+router.route('/product_detail/view/:product_id/:size/:color').get(product.viewProductDetail);
 
 /*8. sale_code*/
 const sale_code=	require('../controllers/saleCodeController');
@@ -89,13 +119,13 @@ router.route('/sale_code/update').post(sale_code.update);
 router.route('/sale_code/delete/:id').get(sale_code.delete);
 
 
-/*10. user*/
-const user=	require('../controllers/userController');
-router.route('/user').get(user.home);
-router.route('/user/:id').get(user.view);
-router.route('/user/create').post(user.create);
-router.route('/user/update').post(user.update);
-router.route('/user/delete/:id').get(user.delete);
+/*10. employee*/
+const employee=	require('../controllers/userController');
+router.route('/employee').get(employee.home);
+router.route('/employee/:id').get(employee.view);
+router.route('/employee/create').post(uploadEmployee.single("image"), employee.create);
+router.route('/employee/update').post(uploadEmployee.single("image"), employee.update);
+router.route('/employee/delete/:id').get(employee.delete);
 
 
 /*12. product_sale*/
@@ -108,7 +138,7 @@ router.route('/product_sale/delete/:product/:size/:color/:sale_code').get(produc
 
 
 // login:
-router.route('/login').post(user.login);
+router.route('/login').post(employee.login);
 
 //get product type
 router.route('/product_type/:type').get(product.getProductType);
