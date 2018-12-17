@@ -93,11 +93,11 @@ module.exports =
       if(testInputDataProductDetail){
         var productDetail = {}
 
-        productDetail.product_id = req.body.product_id
+        productDetail.product_id = parseInt(req.body.product_id)
         productDetail.size = req.body.size
-        productDetail.color = req.body.color
-        productDetail.price = req.body.price
-        productDetail.quantity  = req.body.quantity
+        productDetail.color = parseInt(req.body.color)
+        productDetail.price = parseInt(req.body.price)
+        productDetail.quantity  = parseInt(req.body.quantity)
         productDetail.date_received  = new Date()
         // console.log(productDetail.date_received.getDate())
 
