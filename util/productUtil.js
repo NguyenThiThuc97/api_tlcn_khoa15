@@ -88,54 +88,78 @@ module.exports =
 
     return module.exports.testInputDataAddProductDetail(req.body.product_id, req.body.size, req.body.color).then(testInputDataProductDetail => {//
       
-      //create
+      var id = parseInt(req.body.product_id);//product_id
+      var size = req.body.size;
+      var color = parseInt(req.body.color);
+      var quantity = parseInt(req.body.quantity);
+      var price = parseInt(req.body.price); 
+      var old_size = req.body.old_size; 
+      var old_color = parseInt(req.body.old_color); 
+      var date_received = parseInt(req.body.date_received); 
       
-      if(testInputDataProductDetail){
-        var productDetail = {}
-
-        productDetail.product_id = parseInt(req.body.product_id)
-        productDetail.size = req.body.size
-        productDetail.color = parseInt(req.body.color)
-        productDetail.price = parseInt(req.body.price)
-        productDetail.quantity  = parseInt(req.body.quantity)
-        productDetail.date_received  = new Date()
-        // console.log(productDetail.date_received.getDate())
-
-        return itemProduct.update({"id" : productDetail.product_id}, {$push : {"product" : productDetail}}).then(result => {
-        {
-            if(result.n == 1 && result.nModified == 1 && result.ok == 1)
-              res.json({message : "create product detail successfull", statusAdd : true})
-            else
-              res.json({message : "create product detail fail", statusAdd : false})
-        }
-        })
-      }
-      else {
-
-        //update
-
-        var id = req.body.product_id;//product_id
-        var size = req.body.size;
-        var color = req.body.color;
-        var quantity = req.body.quantity;
-        var price = req.body.price; 
+      if(testInputDataProductDetail){//size and color not existed in db => create
         
-        var productDetailUpdate  = {
+        var productDetail = {
           product_id : id,
           size : size,
           color : color,
           price : price,
-          quantity : quantity
+          quantity : quantity,
+          date_received : new Date()
         }
 
-        if(req.body.date_received){
-          productDetailUpdate.date_received = new Date(req.body.date_received)
-        }
-
-        return itemProduct.findOneAndUpdate({"product" : {$elemMatch : {"product_id" : id, "color" : color, "size" : size}}}, 
-          {$set : {"product.$" : productDetailUpdate}}, { upsert: true }).then(resultUpdate => {
-            res.json({message : resultUpdate})
+        if(old_color && old_size){//update with new color and size value 
+          
+          return itemProduct.findOneAndUpdate({"product" : {$elemMatch : {"product_id" : id, "color" : old_color, "size" : old_size}}}, 
+          {$set : {"product.$" : productDetail}}, { upsert: true }).then(function(resultUpdate, err) {
+            if(err){
+              res.json({message : err, statusUpdate : false})
+            }
+            else {
+              res.json({message : resultUpdate, statusUpdate : true})
+            }
+            
           })
+        }
+        else {//create
+          return itemProduct.update({"id" : productDetail.product_id}, {$push : {"product" : productDetail}}).then(result => {
+            {
+                if(result.n == 1 && result.nModified == 1 && result.ok == 1)
+                  res.json({message : "create product detail successfull", statusAdd : true})
+                else
+                  res.json({message : "create product detail fail", statusAdd : false})
+            }
+            })
+        }
+      }
+      else {
+        if(size === old_size && color === old_color){//update (not include size and color)
+          var productDetailUpdate  = {
+            product_id : id,
+            size : size,
+            color : color,
+            price : price,
+            quantity : quantity
+          }
+  
+          if(req.body.date_received){
+            productDetailUpdate.date_received = new Date(req.body.date_received)
+          }
+  
+          return itemProduct.findOneAndUpdate({"product" : {$elemMatch : {"product_id" : id, "color" : color, "size" : size}}}, 
+            {$set : {"product.$" : productDetailUpdate}}, { upsert: true }).then(function(resultUpdate, err) {
+              if(err){
+                res.json({message : err, statusUpdate : false})
+              }
+              else {
+                res.json({message : resultUpdate, statusUpdate : true})
+              }
+              
+            })
+        }
+        else {
+          res.json({message : "update product detail fail", statusUpdate : false})
+        }
         }
     })
   },
