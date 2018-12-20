@@ -31,7 +31,7 @@ module.exports = {
     },
 
     create : function(req, res){
-      console.log(req)
+      
       productUtil.saveProduct(req).then(function(result)
       {
         res.json(result);
