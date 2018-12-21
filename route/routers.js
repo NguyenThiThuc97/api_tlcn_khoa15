@@ -110,6 +110,9 @@ router.route('/product_detail/update').post(product.updateProductDetail);
 router.route('/product_detail/delete/:product_id/:size/:color').get(product.deleteProductDetail);
 router.route('/product_detail/view/:product_id/:size/:color').get(product.viewProductDetail);
 
+router.route('/product_category/:category').get(product.getProductCategory);
+router.route('/product_age_type/:age_type').get(product.getProductAgeType);
+
 /*8. sale_code*/
 const sale_code=	require('../controllers/saleCodeController');
 router.route('/sale_code').get(sale_code.home);

@@ -354,5 +354,34 @@ module.exports =
   getHotProduct : function()
   {
     
+  },
+
+  getProductCategory : function(category)
+  {
+    return itemProduct.find({"category" : category}).then(res => {
+      return res
+    })
+  },
+
+  getProductAgeType : function(req)
+  {
+    var age_type = req.params.age_type
+    return itemCategory.find({"age_type" : age_type}).then(categories => {
+      return Promise.all( categories.map(itemCategory => {
+        var category_id = itemCategory.id
+        return module.exports.getProductCategory(category_id).then(products => {
+          return products
+        })
+      })).then(result => {
+        var allProduct = []
+        for(var val of result){
+          allProduct = allProduct.concat(val)
+        }
+        return allProduct
+      }).catch(err => {
+        console.log(err)
+        return {message : err}
+      })
+    })
   }
 }
