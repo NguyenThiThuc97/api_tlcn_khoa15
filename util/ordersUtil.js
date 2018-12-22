@@ -60,7 +60,7 @@ module.exports = {
 	},
 	view : function(req)
 	{
-		var id = req.body.id;
+		var id = req.params.id;
 		return itemOrders.find({"id":id}).then(result=>
 		{
 			return result;
