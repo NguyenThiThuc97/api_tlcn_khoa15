@@ -58,9 +58,8 @@ module.exports = {
 			return result;
 		})
 	},
-	view : function(req)
+	view : function(id)
 	{
-		var id = req.params.id;
 		return itemOrders.find({"id":id}).then(result=>
 		{
 			return result;
