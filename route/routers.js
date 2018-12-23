@@ -128,6 +128,7 @@ router.route('/employee').get(employee.home);
 router.route('/employee/:id').get(employee.view);
 router.route('/employee/create').post(uploadEmployee.single("image"), employee.create);
 router.route('/employee/update').post(uploadEmployee.single("image"), employee.update);
+router.route('/employee/update_pwd').post(employee.update_pwd);
 router.route('/employee/delete/:id').get(employee.delete);
 
 

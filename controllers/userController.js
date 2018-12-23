@@ -47,11 +47,16 @@ module.exports = {
         var address = req.body.address;
         var password = req.body.password;
         var department=req.body.department;
-        var image = req.body.image;
+        var image = req.file
+        var imageN = ""
+
+        if(image){
+          imageN = image.originalname
+        }
 
         var password_encrypted=crypto.createHmac('sha256', password).update('123').digest('hex');
 
-        const newItem=new Item(
+        const newItem=new ItemUser(
           {
             username:username,
             fullname:fullname,
@@ -60,10 +65,17 @@ module.exports = {
             address:address,
             password:password_encrypted,
             department:department,
-            image:image
+            image:imageN
           });
         
-        newItem.save().then(item=>res.json(item));
+          newItem.save().then((item, err)=> {
+            if(!err){
+                res.json({message: "success"})
+            }
+            else{
+                res.json({message: "error"})
+            }
+          });
     },
     update : function(req, res){//need test
        //do something
@@ -74,19 +86,34 @@ module.exports = {
         var mail = req.body.mail;
         var address = req.body.address;
         var department = req.body.department;
-        var image = req.body.image;
-
-        Item.findOneAndUpdate({'id':id}, {"$set":{"username":username, "department":department, "fullname":fullname, "phone":phone, "mail":mail, "address":address, "image":image}}, function(err) {
+        var image = req.file
+        var imageN = ""
+        if(image){
+            imageN = image.originalname
+        }
+        if(imageN.length === 0){//not update
+            
+          ItemUser.findOneAndUpdate({'id':id}, {"$set":{"username":username, "department":department, "fullname":fullname, "phone":phone, "mail":mail, "address":address}}, function(err) {
               if (err)
                   res.send("fail");
               else
                   res.json({ message: 'Offer Updated!'});
           });
+        }
+        else{
+
+            ItemUser.findOneAndUpdate({'id':id}, {"$set":{"username":username, "department":department, "fullname":fullname, "phone":phone, "mail":mail, "address":address, "image":imageN}}, function(err) {
+                if (err)
+                    res.send("fail");
+                else
+                    res.json({ message: 'Offer Updated!'});
+            });
+        }
     },
     update_pwd:function(req, res){
       var id = req.body.id;
       var pwd = req.body.password;
-      var password_encrypted = crypto.createHmac('sha256', password).update('123').digest('hex');
+      var password_encrypted = crypto.createHmac('sha256', pwd).update('123').digest('hex');
       Item.findOneAndUpdate({'id':id}, {"$set":{"password":password_encrypted}}, function(err) {
               if (err)
                   res.send("fail");
