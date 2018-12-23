@@ -48,7 +48,7 @@ const ItemSchema=new Schema(
 	},
 	image:{
 		type:String,
-		required:true,
+		// required:true,
 		default:""
 	}
 });
