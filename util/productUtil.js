@@ -314,6 +314,8 @@ module.exports =
         })
       })
   },
+
+
   getProductNewArrival : function(flag)//get limit or not
   {
     if(flag)
@@ -383,5 +385,16 @@ module.exports =
         return {message : err}
       })
     })
-  }
+  },
+  
+  getProductAgeTypeHome : function(req){
+    return module.exports.getProductAgeType(req).then(result => {
+      var results = []
+      
+      for(var index = 0; index < 3; index++){
+        results.push(result[index])
+      }
+      return results
+    })
+  },
 }

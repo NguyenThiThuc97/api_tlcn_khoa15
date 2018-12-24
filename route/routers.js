@@ -112,6 +112,7 @@ router.route('/product_detail/view/:product_id/:size/:color').get(product.viewPr
 
 router.route('/product_category/:category').get(product.getProductCategory);
 router.route('/product_age_type/:age_type').get(product.getProductAgeType);
+router.route('/product_age_type_home/:age_type').get(product.getProductAgeTypeHome);
 
 /*8. sale_code*/
 const sale_code=	require('../controllers/saleCodeController');
