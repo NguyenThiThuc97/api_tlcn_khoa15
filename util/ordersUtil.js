@@ -60,9 +60,14 @@ module.exports = {
 	},
 	view : function(id)
 	{
-		return itemOrders.find({"id":id}).then(result=>
+		return itemOrders.findOne({"id":id}).lean().then(result=>
 		{
-			return result;
+			return itemCustomer.findOne({"id" : result.customer}).then(userBuy => {
+				
+				result.CustomerName = userBuy.full_name
+				result.CustomerUsername = userBuy.username
+				return result
+			})
 		})
 	},
 	delete: function(req)

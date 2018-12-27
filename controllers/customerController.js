@@ -91,14 +91,23 @@ module.exports = {
     },
     update_pwd:function(req, res){//password is encrypt before to server
       var id = req.body.id;
-      var pwd = req.body.password;
-      var password_encrypt=crypto.createHmac('sha256', pwd).update('123').digest('hex');
-      Item.findOneAndUpdate({'id':id}, {"$set":{"password":password_encrypt}}, function(err) {
-              if (err)
-                  res.send("fail");
-              else
-                  res.json({ message: 'Offer Updated!'});
-          });
+      var new_pwd = req.body.new_pwd;
+      var old_pwd_encrypt = crypto.createHmac('sha256', req.body.old_pwd).update('123').digest('hex');
+      var password_encrypt = crypto.createHmac('sha256', new_pwd).update('123').digest('hex');
+
+        Item.findOne({"id" : id}).then(testUpdatePwd => {
+            if(testUpdatePwd.password === old_pwd_encrypt){
+                Item.findOneAndUpdate({'id':id}, {"$set":{"password":password_encrypt}}, function(err) {
+                    if (err)
+                        res.json({message : "Update Fail", statusUpdatePwd : false});
+                    else
+                        res.json({ message: 'Offer Updated!', statusUpdatePwd : true});
+                });
+            }
+            else {
+                res.json({message : "Old and new password are not match!!!", statusUpdatePwd : false})
+            }
+        })
     },
 
     delete : function(req, res){

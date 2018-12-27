@@ -58,24 +58,24 @@ module.exports =
 		else{
 			switch (userType){
 				case "customer":{
-					return ItemCustomer.find({"username":username, "password":password_encrypted}).count().then(function(result)
+					return ItemCustomer.find({"username":username, "password":password_encrypted}).then(function(result)
 					{
-						if(result===0)
+						if(result.length === 0)
 						{
 							return {message:"customer : incorrect username or password"};
 						}
-						return true;
+						return {user: result[0], statusLogin : true};
 					})
 				} 
 				case "employee":{
-					return ItemEmployee.find({"username":username, "password":password_encrypted}).count().then(function(result)
+					return ItemEmployee.find({"username":username, "password":password_encrypted}).then(function(result)
 					{
-						console.log(result)
-						if(result === 0)
+						
+						if(result.length === 0)
 						{
 							return {message:"eployee : incorrect username or password"};
 						}
-						return true;
+						return {user: result[0], statusLogin : true};
 					})
 				}
 				default : {

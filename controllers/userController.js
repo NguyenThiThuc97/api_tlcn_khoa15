@@ -18,9 +18,9 @@ module.exports = {
       var password = req.body.password;
       
       userUtil.login(userType, username, password).then(result => {
-        if(result === true)
+        if(result.statusLogin === true)
         {
-          res.json({message:"success", statusLogin: true});
+          res.json({message:"success", statusLogin: true, user : result.user});
         }
         else
         {
