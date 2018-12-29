@@ -397,4 +397,16 @@ module.exports =
       return results
     })
   },
+
+  getProductName : function(){
+    return itemProduct.find({},{name : 1, _id : 0, id : 1}).lean().then(res => {
+      var result = null
+      result = res.map((item, index) => {
+        item.value = item.id
+        item.label = item.name
+        return item
+      })
+      return result
+    })
+  }
 }

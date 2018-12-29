@@ -96,6 +96,12 @@ module.exports = {
     productUtil.getProductAgeTypeHome(req).then(result => {
       res.json(result)
     })
+  },
+
+  getAllProductName : function(req, res) {
+    productUtil.getProductName().then(result => {
+      res.json(result)
+    })
   }
 
 }
