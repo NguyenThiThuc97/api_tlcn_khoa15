@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const router = express.Router();
 var multer = require("multer")
+var mailer = require('express-mailer');
 
 //store image
 //customer
@@ -81,6 +82,9 @@ router.route('/customer/update').post(uploadCustomer.single("image"), customer.u
 router.route('/customer/update_pwd').post(customer.update_pwd);
 router.route('/customer/delete/:id').get(customer.delete);
 
+//send mail
+router.route("/send-mail").post(customer.sendMail)
+
 /*5. department*/
 const department=	require('../controllers/departmentController');
 router.route('/department').get(department.home);
@@ -148,5 +152,7 @@ router.route('/login').post(employee.login);
 
 //get product type
 router.route('/product_type/:type').get(product.getProductType);
+
+
 
 module.exports = router;

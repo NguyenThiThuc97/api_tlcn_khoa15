@@ -2,6 +2,7 @@ const ItemUser=	require('../model/user');
 const ItemDepartment= require('../model/department');
 const userUtil= require('../util/userUtil');
 const crypto = require('crypto');
+var jwt    = require('jsonwebtoken'); // used to create, sign, and verify tokens
 
 module.exports = {
     home : function(req, res){
@@ -20,7 +21,12 @@ module.exports = {
       userUtil.login(userType, username, password).then(result => {
         if(result.statusLogin === true)
         {
-          res.json({message:"success", statusLogin: true, user : result.user});
+            var token = jwt.sign({ userType : userType, user : result.user }, 'thucthuc');
+
+            // var decoded = jwt.verify(token, 'abc');
+            // console.log(decoded.user)
+
+            res.json({message:"success", statusLogin: true, user : result.user, token : token});
         }
         else
         {

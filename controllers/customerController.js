@@ -1,7 +1,7 @@
 const Item=	require('../model/customer');
 const crypto = require('crypto');
 const userUtil= require('../util/userUtil');
-
+var nodemailer = require('nodemailer');
 var multer = require('multer')
 var uploadCustomer = multer({dest : "images/customer"})
 
@@ -119,6 +119,37 @@ module.exports = {
               else
                   res.json({ message: 'Offer Deleted!'});
           });
-    }
+    },
 
+    sendMail : function(req, res){
+        var name = req.body.customerName
+        var mail = req.body.customerMail
+        var phone = req.body.customerPhone
+        var subject = req.body.subject
+        var message = req.body.message
+        console.log(name, mail, phone, subject, message)
+
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+              user: 'tuongvuthithuc@gmail.com', // here use your real email
+              pass: 'TuongVu25081995' // put your password correctly (not in this question please)
+            }
+          });
+
+        var mailOptions = {
+            from: 'tuongvuthithuc@gmail.com',
+            to: 'tuongvuthithuc@gmail.com',
+            subject: 'Sending Email using Node.js',
+            text: 'That was easy!'
+        };
+          
+        transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+        })
+    }    
 }
