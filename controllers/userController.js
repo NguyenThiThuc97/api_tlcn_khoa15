@@ -14,27 +14,37 @@ module.exports = {
     },
     login:function(req, res)
     {
-      var userType = req.body.userType;
-      var username = req.body.username;
-      var password = req.body.password;
-      
-      userUtil.login(userType, username, password).then(result => {
-        if(result.statusLogin === true)
-        {
-            var token = jwt.sign({ userType : userType, user : result.user }, 'thucthuc');
-
-            // var decoded = jwt.verify(token, 'abc');
-            // console.log(decoded.user)
-
-            res.json({message:"success", statusLogin: true, user : result.user, token : token});
-        }
-        else
-        {
-          res.json({result, statusLogin : false});
-        }
-      })
+        var userType = req.body.userType;
+        var username = req.body.username;
+        var password = req.body.password;
+        
+        userUtil.login(userType, username, password).then(result => {
+            if(result.statusLogin === true)
+            {
+                var token = jwt.sign({ userType : userType, user : result.user }, 'thucthuc');
+                res.json({message:"success", statusLogin: true, token : token});
+            }
+            else
+            {
+                res.json({result, statusLogin : false});
+            }
+        })
 
     },
+
+    checkUserWithToken : function(req, res){
+        
+        if(req.body.token){
+
+            var decoded = jwt.verify(token, 'thucthuc');
+            // console.log(decoded.user)
+            if(decoded.user.username === username)
+                {
+                    
+                }
+        }
+    },
+
     view : function(req, res){
        //do something
         var id = req.params.id;

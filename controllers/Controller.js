@@ -23,7 +23,7 @@ module.exports = {
 		}
 
 		return oData;
-	}
+	},
 	update:function(iData, req, res)
 	{
 		var oData=[];
